@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: story-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: story
+  template:
+    metadata:
+      labels:
+        app: story
+    spec:
+      containers:
+        - name: story
+          image: remez19/kub-volumes:1
+          env:
+            - name: STORY_FOLDER
+              valueFrom:
+                configMapKeyRef:
+                  name: data-store-env
+                  key: folder
+          # Making the volume available to this container.
+          volumeMounts:
+            # Where the data should be saved.
+            - mountPath: /app/story
+              name: story-volume
+      volumes:
+        - name: story-volume
+          # Connecting the pod to a claim (Persistent Volume)
+          persistentVolumeClaim:
+            claimName: host-pvc

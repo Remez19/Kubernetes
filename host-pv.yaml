@@ -1,0 +1,45 @@
+# # Setting a Defining a Persistent Volume
+# # With the hostPath type/driver volume.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: host-pv
+spec:
+  # The capacity is important because we as admins want to controll how much capacity
+  # can be used by the diffrent pods.
+  capacity:
+    # The overall storage that can be used.
+    # 4Gi - 4 Giga 4Gi
+    storage: 1Gi
+    # volumeMode - two optnios Filesystem/Block.
+    # This are diffrent storage types.
+  volumeMode: Filesystem
+  storageClassName:
+    standard
+    # Define how this volume should be accessed.
+    # We have three available options:
+    # ReadWriteOnce - the volume can be accessed by only one node.
+    # ReadOnlyMany - Rean only by many Nodes (cant work with hostPath - we have only
+    # one Node).
+    # ReadWriteMany
+  accessModes:
+    - ReadWriteOnce
+    # This will setup a hosPath persistent volume as a stnd alone
+    # detached from any pod in this enviroment. (only work when we have a single Node)
+  hostPath:
+    path: /data
+    type: DirectoryOrCreate
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: host-pv
+# spec:
+#   capacity:
+#     storage: 1Gi
+#   volumeMode: Filesystem
+#   storageClassName: standard
+#   accessModes:
+#     - ReadWriteOnce
+#   hostPath:
+#     path: /data
+#     type: DirectoryOrCreate
