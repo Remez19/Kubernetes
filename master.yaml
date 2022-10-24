@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    # Which pods should be managed by this service
+    app: second-app
+  ports:
+    - protocol: "TCP"
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+# With kind we define which kubernetes object we want to create
+# Like Deployment, Job, Service...
+kind: Deployment
+# metadata - To add aditional information to the object
+metadata:
+  # name - the name of the object.
+  name: second-app-deployment
+# spec - specification of this object.
+spec:
+  # replicas - the number of pods we want (by default 1).
+  replicas: 1
+  # With the selector we specify wich pods sholud be managed by this deployment.
+  selector:
+    matchLabels:
+      app: second-app
+  # template - with this we define the pods that should be created as
+  # part of this deployment.
+  # template is always a pod.
+  template:
+    metadata:
+      labels:
+        # its up to us to choose the name of the key & value
+        app: second-app
+    spec:
+      # container allow us to define the containers or container
+      # that should be part of this pod.
+      containers:
+        - name: second-node
+          image: remez19/kub-first-app:2
